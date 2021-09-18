@@ -39,10 +39,7 @@ MainLoop:
 		currentCluster := neighbours
 		visited[p.Id()] = Cluster
 	SeedLoop:
-		for _, c := range currentCluster {
-			// if c.Id() == p.Id() {
-			// 	continue SeedLoop
-			// }
+		for c := range currentCluster {
 			if pointLabel := visited[c.Id()]; pointLabel == Noise {
 				visited[c.Id()] = Cluster
 			}
@@ -52,10 +49,16 @@ MainLoop:
 			visited[c.Id()] = Cluster
 			newNeighbours := getNeighbours(eps, points, c)
 			if len(newNeighbours) >= minPoints {
-				currentCluster = append(currentCluster, newNeighbours...)
+				for newNeighbour, _ := range newNeighbours {
+					currentCluster[newNeighbour] = struct{}{}
+				}
 			}
 		}
-		clusters = append(clusters, currentCluster)
+		clusterSlice := make([]ClusterPoint, 0)
+		for i := range currentCluster {
+			clusterSlice = append(clusterSlice, i)
+		}
+		clusters = append(clusters, clusterSlice)
 	}
 	noise := make([]ClusterPoint, 0)
 	for _, v := range points {
@@ -66,11 +69,11 @@ MainLoop:
 	return clusters, noise
 }
 
-func getNeighbours(eps float64, points []ClusterPoint, current ClusterPoint) []ClusterPoint {
-	neighbours := make([]ClusterPoint, 0)
+func getNeighbours(eps float64, points []ClusterPoint, current ClusterPoint) map[ClusterPoint]struct{} {
+	neighbours := make(map[ClusterPoint]struct{})
 	for _, p := range points {
 		if current.Distance(p) <= eps {
-			neighbours = append(neighbours, p)
+			neighbours[p] = struct{}{}
 		}
 	}
 	return neighbours
