@@ -16,9 +16,9 @@ const (
 )
 
 // DBScan Implements a reference implementation of the DBScan clustering algorithm see https://en.wikipedia.org/wiki/DBSCAN
-// eps is the epsilon value for 2 points to be considered to be neighbours
-// minPoints is the minimum number of points needed to form a cluster
-// points is the list of ClusterPoint's that the algorithm is being run on
+// - eps is the epsilon value for 2 points to be considered to be neighbours
+// - minPoints is the minimum number of points needed to form a cluster
+// - points is the list of ClusterPoint's that the algorithm is being run on
 //
 // This function can use optimisation improvements
 func DBScan(minPoints int, eps float64, points ...ClusterPoint) ([][]ClusterPoint, []ClusterPoint) {
@@ -49,7 +49,7 @@ MainLoop:
 			visited[c.Id()] = Cluster
 			newNeighbours := getNeighbours(eps, points, c)
 			if len(newNeighbours) >= minPoints {
-				for newNeighbour, _ := range newNeighbours {
+				for newNeighbour := range newNeighbours {
 					currentCluster[newNeighbour] = struct{}{}
 				}
 			}
