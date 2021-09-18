@@ -2,23 +2,27 @@
 
 package clustering
 
+// ClusterPoint is the interface that Users are expected to implement on their
+// type
 type ClusterPoint interface {
+	// Distance defines the distance calculation between two points
 	Distance(ClusterPoint) float64
+	// Id defines the name of the point/object when being indexed
 	Id() string
 }
 
 type label int
 
 const (
-	Unknown label = 0
-	Noise   label = 1
-	Cluster       = 2
+	Unknown label = iota
+	Noise
+	Cluster
 )
 
 // DBScan Implements a reference implementation of the DBScan clustering algorithm see https://en.wikipedia.org/wiki/DBSCAN
-// - eps is the epsilon value for 2 points to be considered to be neighbours
-// - minPoints is the minimum number of points needed to form a cluster
-// - points is the list of ClusterPoint's that the algorithm is being run on
+// 	eps: The epsilon value for 2 points to be considered to be neighbours
+// 	minPoints: The minimum number of points needed to form a cluster
+//	points: The list of ClusterPoints that the algorithm is being run on
 //
 // This function can use optimisation improvements
 func DBScan(minPoints int, eps float64, points ...ClusterPoint) ([][]ClusterPoint, []ClusterPoint) {
@@ -38,6 +42,7 @@ MainLoop:
 		}
 		currentCluster := neighbours
 		visited[p.Id()] = Cluster
+
 	SeedLoop:
 		for c := range currentCluster {
 			if pointLabel := visited[c.Id()]; pointLabel == Noise {
@@ -54,12 +59,14 @@ MainLoop:
 				}
 			}
 		}
+		//Translate current cluster to slice for return to caller
 		clusterSlice := make([]ClusterPoint, 0)
 		for i := range currentCluster {
 			clusterSlice = append(clusterSlice, i)
 		}
 		clusters = append(clusters, clusterSlice)
 	}
+	//Construct Noise slice
 	noise := make([]ClusterPoint, 0)
 	for _, v := range points {
 		if visited[v.Id()] == Noise {
