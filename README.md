@@ -9,19 +9,6 @@ to use this you will need to make a type that implements the ClusterPoint interf
 - `Distance(ClusterPoint) float64`: The distance inbetween two points
 - `Id() string`: An Id to use as a map index internally
 
-```golang
-type Point struct {
-  loc   int
-  name  string
-}
+You can then use that structure to call the `clustering.DBScan` method with your desired parameters.
 
-func (p Point) Distance(other ClusterPoint) {
-  return p.loc - other.(Point).loc
-}
-
-func (p Point) Id() string {
-  return p.name
-}
-
-cluster, noise := DBScan()
-```
+See the [examples](examples) folder for more info.
