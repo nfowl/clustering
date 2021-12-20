@@ -40,6 +40,4 @@ func TestDBScan(t *testing.T) {
 	if len(noise) != 1 {
 		t.Errorf("noise was not length 2, insead %d", len(noise))
 	}
-	// fmt.Printf("Clusters: %v\n", clusters)
-	// fmt.Printf("Noise: %v", noise)
 }
